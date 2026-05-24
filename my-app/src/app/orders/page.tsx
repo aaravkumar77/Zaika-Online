@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Clock, ReceiptText, ShoppingBag } from "lucide-react";
 import { api } from "../lib/api";
 import useAuthContext from "../hooks/useAuth";
+import OrderTimeline from "../components/OrderTimeline";
 
 interface OrderItem {
   _id: string;
@@ -177,38 +178,8 @@ export default function OrdersPage() {
                 ))}
               </div>
 
-              <div className="mt-6 border-t border-[#efd9bd] pt-5">
-                <div className="grid grid-cols-5 gap-2">
-                  {statusSteps.map((step) => {
-                    const activeIndex = statusSteps.indexOf(order.status);
-                    const stepIndex = statusSteps.indexOf(step);
-                    const isComplete =
-                      order.status !== "cancelled" && activeIndex >= stepIndex;
-
-                    return (
-                      <div key={step} className="min-w-0">
-                        <div
-                          className={`h-2 rounded-full ${
-                            isComplete ? "bg-[#d9472b]" : "bg-[#efd9bd]"
-                          }`}
-                        />
-                        <p
-                          className={`mt-2 truncate text-xs font-bold capitalize ${
-                            isComplete ? "text-[#251611]" : "text-[#765f55]"
-                          }`}
-                          title={formatStatus(step)}
-                        >
-                          {formatStatus(step)}
-                        </p>
-                      </div>
-                    );
-                  })}
-                </div>
-                {order.status === "cancelled" && (
-                  <p className="mt-3 rounded-xl bg-red-50 p-3 text-sm font-semibold text-red-700">
-                    This order was cancelled.
-                  </p>
-                )}
+              <div className="mt-6">
+                <OrderTimeline status={order.status} createdAt={order.createdAt} />
               </div>
             </article>
           ))}

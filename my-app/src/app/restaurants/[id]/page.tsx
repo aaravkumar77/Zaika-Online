@@ -1,5 +1,6 @@
 import { Clock, MapPin, Star } from "lucide-react";
 import MenuOrderPanel from "../../components/MenuOrderPanel";
+import ReviewComponent from "../../components/ReviewComponent";
 
 async function fetchData(id: string) {
   const base = process.env.NEXT_PUBLIC_API_BASE;
@@ -49,55 +50,89 @@ export default async function RestaurantPage(props: {
       </div>
     );
 
+  const ratingValue = restaurant.rating ? Number(restaurant.rating).toFixed(1) : null;
+  const reviewCount = restaurant.reviewCount ? restaurant.reviewCount : null;
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-10">
-      <section className="zaika-card mb-10 overflow-hidden rounded-2xl">
-        <div className="relative h-72 bg-[#251611]">
+      <section className="zaika-card mb-10 overflow-hidden rounded-[1.75rem] shadow-[0_28px_60px_rgba(71,37,20,0.08)]">
+        <div className="relative h-[28rem] overflow-hidden bg-[#251611]">
           {restaurant.logoUrl && (
             <img
               src={restaurant.logoUrl}
               alt={restaurant.name}
-              className="h-full w-full object-cover opacity-80"
+              className="h-full w-full object-cover opacity-90"
             />
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
-          <div className="absolute bottom-0 left-0 right-0 p-6 text-white md:p-8">
-            <p className="text-sm font-bold uppercase tracking-[0.18em] text-[#f4a51c]">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 p-6 text-white md:p-10">
+            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#f4a51c]">
               Zaika kitchen
             </p>
-            <h1 className="mt-2 text-4xl font-black md:text-5xl">
+            <h1 className="mt-4 text-4xl font-black leading-tight md:text-5xl">
               {restaurant.name}
             </h1>
-            <p className="mt-3 max-w-3xl text-white/85">
+            <p className="mt-4 max-w-3xl text-sm leading-7 text-white/80 sm:text-base">
               {restaurant.description}
             </p>
           </div>
         </div>
 
-        <div className="grid gap-4 p-6 text-sm font-semibold text-[#765f55] md:grid-cols-3 md:p-8">
-          {restaurant.cuisine?.length > 0 && (
-            <p>
-              <span className="text-[#251611]">Cuisine:</span>{" "}
-              {restaurant.cuisine.join(", ")}
+        <div className="grid gap-6 border-t border-[#efd9bd] bg-[#fffdf8] p-6 md:grid-cols-[1fr_auto] md:p-8">
+          <div className="space-y-5">
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="rounded-full bg-[#fff1d5] px-4 py-2 text-sm font-semibold text-[#d9472b]">
+                {ratingValue ? `${ratingValue} / 5` : 'Not rated yet'}
+              </span>
+              {reviewCount && (
+                <span className="rounded-full bg-[#f7ead6] px-4 py-2 text-sm font-semibold text-[#765f55]">
+                  {reviewCount} reviews
+                </span>
+              )}
+              {restaurant.openingHours && (
+                <span className="rounded-full bg-[#ecf3f7] px-4 py-2 text-sm font-semibold text-[#155e75]">
+                  <Clock className="inline h-4 w-4 text-[#155e75]" /> {restaurant.openingHours}
+                </span>
+              )}
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              {restaurant.cuisine?.length > 0 && (
+                <div className="rounded-3xl border border-[#efd9bd] bg-white p-5 shadow-sm">
+                  <p className="text-xs uppercase tracking-[0.24em] text-[#d9472b]">Cuisine</p>
+                  <p className="mt-3 text-sm leading-6 text-[#4a4037]">
+                    {restaurant.cuisine.join(', ')}
+                  </p>
+                </div>
+              )}
+              {restaurant.address && (
+                <div className="rounded-3xl border border-[#efd9bd] bg-white p-5 shadow-sm">
+                  <p className="text-xs uppercase tracking-[0.24em] text-[#d9472b]">Location</p>
+                  <p className="mt-3 text-sm leading-6 text-[#4a4037]">
+                    {restaurant.address.street}, {restaurant.address.city}, {restaurant.address.state} - {restaurant.address.zip}
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="rounded-[1.75rem] border border-[#efd9bd] bg-white p-6 shadow-sm">
+            <p className="text-sm uppercase tracking-[0.18em] text-[#d9472b]">What to expect</p>
+            <h2 className="mt-4 text-2xl font-black text-[#251611]">Fresh flavours, fast delivery</h2>
+            <p className="mt-4 text-sm leading-6 text-[#765f55]">
+              Enjoy handpicked dishes crafted for modern guests. Add items from the menu and use a coupon to save instantly.
             </p>
-          )}
-          {restaurant.address && (
-            <p className="flex items-center gap-2">
-              <MapPin className="h-4 w-4 text-[#d9472b]" />
-              {restaurant.address.street}, {restaurant.address.city},{" "}
-              {restaurant.address.state} - {restaurant.address.zip}
-            </p>
-          )}
-          <p className="flex items-center gap-2">
-            <Star className="h-4 w-4 fill-[#f4a51c] text-[#f4a51c]" />
-            {restaurant.rating || "Not rated yet"}
-          </p>
-          {restaurant.openingHours && (
-            <p className="flex items-center gap-2">
-              <Clock className="h-4 w-4 text-[#d9472b]" />
-              {restaurant.openingHours}
-            </p>
-          )}
+            <div className="mt-6 grid gap-3 sm:grid-cols-2">
+              <div className="rounded-3xl bg-[#fff8ed] p-4 text-sm text-[#765f55]">
+                <p className="font-semibold text-[#251611]">Comfort food</p>
+                <p className="mt-2">Quick kitchen favourites delivered warm.</p>
+              </div>
+              <div className="rounded-3xl bg-[#ecfdf5] p-4 text-sm text-[#155e75]">
+                <p className="font-semibold text-[#0f766e]">Trusted quality</p>
+                <p className="mt-2">Premium recipes, prepared with care.</p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -111,6 +146,10 @@ export default async function RestaurantPage(props: {
       </div>
 
       <MenuOrderPanel restaurantId={id} dishes={dishes} />
+
+      <section className="mt-14">
+        <ReviewComponent restaurantId={id} />
+      </section>
     </div>
   );
 }

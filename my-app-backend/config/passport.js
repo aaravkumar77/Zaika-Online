@@ -23,14 +23,16 @@ passport.deserializeUser(async (id, done) => {
 });
 
 // In config/passport.js
-
-passport.use(new GoogleStrategy({
-    clientID: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "/api/auth/google/callback",
-    passReqToCallback: true
-  },
-  async (req, accessToken, refreshToken, profile, done) => { 
+// Only configure Google OAuth when credentials are present. This avoids
+// crashing the server in dev/test environments where env vars are not set.
+if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+  passport.use(new GoogleStrategy({
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: "/api/auth/google/callback",
+      passReqToCallback: true
+    },
+    async (req, accessToken, refreshToken, profile, done) => { 
     const requestedRole = ["customer", "vendor"].includes(req.session.googleAuthRole)
       ? req.session.googleAuthRole
       : "customer";
@@ -72,3 +74,6 @@ passport.use(new GoogleStrategy({
     });
   }
 ));
+} else {
+  console.warn('⚠️ GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET not set — Google OAuth disabled.');
+}

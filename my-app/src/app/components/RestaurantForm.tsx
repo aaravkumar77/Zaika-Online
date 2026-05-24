@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import { api } from "../lib/api";
+import toast from "react-hot-toast";
+import CloudinaryImageUpload from "./CloudinaryImageUpload";
+import { LoadingButton } from "./Loaders/SkeletonLoader";
 
 interface Props {
   onSuccess: (data: any) => void;
@@ -25,7 +28,6 @@ export default function RestaurantForm({ onSuccess }: Props) {
     isVeg: false,
   });
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -43,10 +45,20 @@ export default function RestaurantForm({ onSuccess }: Props) {
     });
   };
 
+  const handleImageUpload = (imageUrl: string) => {
+    setForm({ ...form, logoUrl: imageUrl });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!form.name || !form.description || !form.logoUrl) {
+      toast.error("Please fill all required fields including image");
+      return;
+    }
+
     setLoading(true);
-    setMessage("");
+    const toastId = toast.loading("Creating restaurant...");
 
     try {
       const res = await api.post("/restaurants", {
@@ -56,7 +68,8 @@ export default function RestaurantForm({ onSuccess }: Props) {
           .map((item) => item.trim())
           .filter(Boolean),
       });
-      setMessage("Restaurant created successfully!");
+      toast.dismiss(toastId);
+      toast.success("Restaurant created successfully! 🎉");
       onSuccess(res.data);
       setForm({
         name: "",
@@ -75,33 +88,32 @@ export default function RestaurantForm({ onSuccess }: Props) {
         isVeg: false,
       });
     } catch (err: any) {
-      setMessage(err.response?.data?.error || "Error creating restaurant");
+      toast.dismiss(toastId);
+      toast.error(err.response?.data?.error || "Error creating restaurant");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="zaika-card max-w-2xl rounded-2xl p-6">
+    <div className="zaika-card max-w-2xl rounded-2xl p-6 animate-in fade-in duration-300">
       <h2 className="text-2xl font-black text-[#251611]">Create Your Restaurant</h2>
       <p className="mb-5 mt-1 text-sm text-[#765f55]">
         Add the core details customers will see on Zaika Online.
       </p>
       <form onSubmit={handleSubmit} className="space-y-4">
+        <CloudinaryImageUpload
+          label="Restaurant Logo"
+          placeholder="Upload restaurant logo"
+          onImageUpload={handleImageUpload}
+          initialImage={form.logoUrl}
+          aspectRatio={1}
+        />
         <input
           type="text"
           name="name"
           placeholder="Restaurant Name"
           value={form.name}
-          onChange={handleChange}
-          className="zaika-input"
-          required
-        />
-        <input
-          type="text"
-          name="description"
-          placeholder="Description"
-          value={form.description}
           onChange={handleChange}
           className="zaika-input"
           required
@@ -160,7 +172,6 @@ export default function RestaurantForm({ onSuccess }: Props) {
           {loading ? "Creating..." : "Create Restaurant"}
         </button>
       </form>
-      {message && <p className="mt-3 text-center text-sm font-semibold text-[#765f55]">{message}</p>}
     </div>
   );
 }
