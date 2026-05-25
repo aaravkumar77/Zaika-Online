@@ -9,7 +9,7 @@ Backend: cloudinary, multer
 ## 🎯 Core Features Added
 
 ### ✅ 1. Cloudinary Image Upload Component
-**Location:** `src/app/components/CloudinaryImageUpload.tsx`
+**Location:** `my-app/src/app/components/CloudinaryImageUpload.tsx`
 - Drag & drop interface
 - Real-time preview
 - Upload progress
@@ -21,7 +21,7 @@ Backend: cloudinary, multer
 - DishForm.tsx (dish images)
 
 ### ✅ 2. Toast Notifications System
-**Location:** `src/app/components/ToastProvider.tsx`
+**Location:** `my-app/src/app/components/ToastProvider.tsx`
 - Success ✅ / Error ❌ / Loading ⏳
 - Auto-dismiss (3-4 seconds)
 - Zaika theme colors
@@ -33,7 +33,7 @@ Backend: cloudinary, multer
 - RestaurantsPage
 
 ### ✅ 3. Beautiful Loaders & Skeletons
-**Location:** `src/app/components/Loaders/`
+**Location:** `my-app/src/app/components/Loaders/`
 - 10+ pre-made skeleton loaders
 - Smooth animations
 - Auto-responsive grids
@@ -171,7 +171,7 @@ CLOUDINARY_API_SECRET=your_api_secret
 
 ### New Files Created
 ```
-src/app/components/
+my-app/src/app/components/
 ├── CloudinaryImageUpload.tsx (NEW)
 ├── ToastProvider.tsx (NEW)
 └── Loaders/ (NEW FOLDER)
@@ -189,7 +189,7 @@ Root docs/
 
 ### Updated Files
 ```
-src/app/
+my-app/src/app/
 ├── layout.tsx (added ToastProvider)
 ├── components/
 │   ├── RestaurantForm.tsx (added Cloudinary upload)

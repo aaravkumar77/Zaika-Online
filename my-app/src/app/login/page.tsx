@@ -3,6 +3,7 @@ import { ShoppingBag, Store } from "lucide-react";
 
 export default function LoginPage() {
   const apiBase = process.env.NEXT_PUBLIC_API_BASE;
+  console.log("API Base URL:", apiBase); // Debugging line to check the API base URL
   const customerLoginUrl = `${apiBase}/auth/google?role=customer`;
   const vendorLoginUrl = `${apiBase}/auth/google?role=vendor`;
 

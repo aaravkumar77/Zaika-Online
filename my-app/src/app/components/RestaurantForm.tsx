@@ -89,7 +89,13 @@ export default function RestaurantForm({ onSuccess }: Props) {
       });
     } catch (err: any) {
       toast.dismiss(toastId);
-      toast.error(err.response?.data?.error || "Error creating restaurant");
+      toast.error(
+        err.response?.data?.error ||
+          err.response?.data?.message ||
+          (err.code === "ECONNABORTED"
+            ? "The registration service is unavailable right now. Please try again shortly."
+            : "Error creating restaurant")
+      );
     } finally {
       setLoading(false);
     }

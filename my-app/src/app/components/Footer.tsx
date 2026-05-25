@@ -1,5 +1,3 @@
-"use client"
-
 export default function Footer() {
   return (
     <footer className="mt-12 border-t border-[#efd9bd] bg-[#fffdf8]/80">
